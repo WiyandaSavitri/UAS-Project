@@ -4,14 +4,12 @@
 #include <cctype>
 #include <vector>
 #include <string>
-
 using namespace std;
 
 struct LoginRecord {
     string username;
     string password;
 };
-
 vector<LoginRecord> login_history; 
 
 void animasi_teks(const char *teks, int y, int x) {
@@ -22,8 +20,6 @@ void animasi_teks(const char *teks, int y, int x) {
         Sleep(100);
     }
 }
-
-
 void tampilkan_kotak_loading() {
     animasi_teks("Memuat...", 10, 10);
     mvprintw(11, 10, "-------------------");
@@ -38,7 +34,6 @@ void tampilkan_bilah_progres() {
         Sleep(200);
     }
 }
-
 void inisialisasi_ncurses(int lebar, int tinggi) {
     initscr();
     curs_set(0);
@@ -47,7 +42,6 @@ void inisialisasi_ncurses(int lebar, int tinggi) {
     nodelay(stdscr, TRUE);
     resize_term(tinggi + 1, lebar);
 }
-
 bool login() {
     char username[50], password[50];
     int kursor_x = 5, kursor_y = 5;
@@ -73,8 +67,7 @@ bool login() {
             refresh();
         }
     }
-
-    mvprintw(kursor_y + 1, kursor_x, "Kata Sandi: ");
+mvprintw(kursor_y + 1, kursor_x, "Kata Sandi: ");
     refresh();
     noecho();
     i = 0;
@@ -97,8 +90,6 @@ bool login() {
         }
     }
     noecho();
-
-    
     for (const auto &record : login_history) {
         if (record.username == username && record.password == password) {
             mvprintw(kursor_y + 2, kursor_x, "Selamat datang kembali, %s!", username);
@@ -107,14 +98,12 @@ bool login() {
             return true;
         }
     }
-
-    login_history.push_back({username, password});
+login_history.push_back({username, password});
     mvprintw(kursor_y + 2, kursor_x, "Login berhasil! Selamat datang, %s!", username);
     refresh();
     Sleep(2000);
     return true;
 }
-
 void tampilkan_riwayat_login() {
     clear();
     mvprintw(2, 5, "Riwayat Login:");
@@ -125,4 +114,36 @@ void tampilkan_riwayat_login() {
     mvprintw(y + 1, 5, "Tekan tombol apa saja untuk melanjutkan...");
     refresh();
     getch();
+}
+void tampilkan_petunjuk_permainan() {
+    clear();
+    mvprintw(5, 10, "Selamat Datang di Permainan!");
+    mvprintw(6, 10, "Gunakan tombol panah untuk bergerak.");
+    mvprintw(7, 10, "Tekan spasi untuk menembak.");
+    mvprintw(8, 10, "Tekan 'q' untuk keluar dari permainan.");
+    mvprintw(10, 10, "Semoga berhasil dan selamat bermain!");
+    refresh();
+    Sleep(5000);
+}
+int main() {
+    int lebar = 50, tinggi = 20;
+    inisialisasi_ncurses(lebar, tinggi);
+
+    for (int y = 0; y < 3; y++) {
+        tampilkan_kotak_loading();
+        tampilkan_bilah_progres();
+        clear();
+    }
+    bool berhasil_login = false;
+    while (!berhasil_login) {
+        berhasil_login = login();
+    }
+    mvprintw(tinggi / 2, lebar / 2 - 10, "Login Berhasil!");
+    refresh();
+    Sleep(2000);
+    tampilkan_riwayat_login();
+    tampilkan_petunjuk_permainan();
+    endwin();
+    
+    return 0;
 }
