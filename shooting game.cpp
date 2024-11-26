@@ -7,7 +7,6 @@
 
 using namespace std;
 
-// Struktur untuk menyimpan riwayat login
 struct LoginRecord {
     string username;
     string password;
@@ -15,7 +14,6 @@ struct LoginRecord {
 
 vector<LoginRecord> login_history; // Vektor untuk menyimpan riwayat login
 
-// Fungsi untuk animasi teks
 void animasi_teks(const char *teks, int y, int x) {
     int panjang = strlen(teks);
     for (int i = 0; i <= panjang; i++) {
@@ -25,7 +23,7 @@ void animasi_teks(const char *teks, int y, int x) {
     }
 }
 
-// Fungsi untuk menampilkan kotak loading
+
 void tampilkan_kotak_loading() {
     animasi_teks("Memuat...", 10, 10);
     mvprintw(11, 10, "-------------------");
@@ -33,7 +31,6 @@ void tampilkan_kotak_loading() {
     mvprintw(13, 10, "-------------------");
 }
 
-// Fungsi untuk menampilkan progress bar
 void tampilkan_bilah_progres() {
     for (int f = 1; f < 17; f++) {
         mvprintw(12, 11 + f, ">>");
@@ -42,7 +39,6 @@ void tampilkan_bilah_progres() {
     }
 }
 
-// Fungsi untuk inisialisasi layar ncurses
 void inisialisasi_ncurses(int lebar, int tinggi) {
     initscr();
     curs_set(0);
@@ -51,12 +47,11 @@ void inisialisasi_ncurses(int lebar, int tinggi) {
     nodelay(stdscr, TRUE);
     resize_term(tinggi + 1, lebar);
 }
-// Fungsi untuk login
+
 bool login() {
     char username[50], password[50];
     int kursor_x = 5, kursor_y = 5;
 
-    // Masukkan Nama Pengguna
     mvprintw(kursor_y, kursor_x, "Nama Pengguna: ");
     refresh();
     int i = 0;
@@ -79,7 +74,6 @@ bool login() {
         }
     }
 
-    // Masukkan Kata Sandi
     mvprintw(kursor_y + 1, kursor_x, "Kata Sandi: ");
     refresh();
     noecho();
@@ -104,7 +98,7 @@ bool login() {
     }
     noecho();
 
-    // Cek apakah pengguna sudah login sebelumnya
+    
     for (const auto &record : login_history) {
         if (record.username == username && record.password == password) {
             mvprintw(kursor_y + 2, kursor_x, "Selamat datang kembali, %s!", username);
@@ -114,7 +108,6 @@ bool login() {
         }
     }
 
-    // Simpan login baru
     login_history.push_back({username, password});
     mvprintw(kursor_y + 2, kursor_x, "Login berhasil! Selamat datang, %s!", username);
     refresh();
@@ -122,7 +115,6 @@ bool login() {
     return true;
 }
 
-// Fungsi untuk menampilkan riwayat login
 void tampilkan_riwayat_login() {
     clear();
     mvprintw(2, 5, "Riwayat Login:");
