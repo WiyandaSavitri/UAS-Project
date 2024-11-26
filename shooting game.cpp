@@ -51,3 +51,86 @@ void inisialisasi_ncurses(int lebar, int tinggi) {
     nodelay(stdscr, TRUE);
     resize_term(tinggi + 1, lebar);
 }
+// Fungsi untuk login
+bool login() {
+    char username[50], password[50];
+    int kursor_x = 5, kursor_y = 5;
+
+    // Masukkan Nama Pengguna
+    mvprintw(kursor_y, kursor_x, "Nama Pengguna: ");
+    refresh();
+    int i = 0;
+    while (true) {
+        char ch = getch();
+        if (ch == '\n' || ch == '\r') {
+            username[i] = '\0';
+            break;
+        } else if (ch == 27) {
+            username[i] = '\0';
+            break;
+        } else if (ch == 127 && i > 0) {
+            i--;
+            mvprintw(kursor_y, kursor_x + i, " ");
+            refresh();
+        } else if (isprint(ch) && i < 49) {
+            username[i++] = ch;
+            mvprintw(kursor_y, kursor_x + i - 1, "%c", ch);
+            refresh();
+        }
+    }
+
+    // Masukkan Kata Sandi
+    mvprintw(kursor_y + 1, kursor_x, "Kata Sandi: ");
+    refresh();
+    noecho();
+    i = 0;
+    while (true) {
+        char ch = getch();
+        if (ch == '\n' || ch == '\r') {
+            password[i] = '\0';
+            break;
+        } else if (ch == 27) {
+            password[i] = '\0';
+            break;
+        } else if (ch == 127 && i > 0) {
+            i--;
+            mvprintw(kursor_y + 1, kursor_x + i, " ");
+            refresh();
+        } else if (isprint(ch) && i < 49) {
+            password[i++] = ch;
+            mvprintw(kursor_y + 1, kursor_x + i - 1, "*");
+            refresh();
+        }
+    }
+    noecho();
+
+    // Cek apakah pengguna sudah login sebelumnya
+    for (const auto &record : login_history) {
+        if (record.username == username && record.password == password) {
+            mvprintw(kursor_y + 2, kursor_x, "Selamat datang kembali, %s!", username);
+            refresh();
+            Sleep(2000);
+            return true;
+        }
+    }
+
+    // Simpan login baru
+    login_history.push_back({username, password});
+    mvprintw(kursor_y + 2, kursor_x, "Login berhasil! Selamat datang, %s!", username);
+    refresh();
+    Sleep(2000);
+    return true;
+}
+
+// Fungsi untuk menampilkan riwayat login
+void tampilkan_riwayat_login() {
+    clear();
+    mvprintw(2, 5, "Riwayat Login:");
+    int y = 4;
+    for (const auto &record : login_history) {
+        mvprintw(y++, 5, "Nama Pengguna: %s | Kata Sandi: %s", record.username.c_str(), record.password.c_str());
+    }
+    mvprintw(y + 1, 5, "Tekan tombol apa saja untuk melanjutkan...");
+    refresh();
+    getch();
+}
