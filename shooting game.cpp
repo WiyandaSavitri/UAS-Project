@@ -12,7 +12,7 @@ struct LoginRecord {
     string password;
 };
 
-vector<LoginRecord> login_history; // Vektor untuk menyimpan riwayat login
+vector<LoginRecord> login_history; 
 
 void animasi_teks(const char *teks, int y, int x) {
     int panjang = strlen(teks);
